@@ -1,0 +1,16 @@
+[telegram]
+# Bot token (obtained from @BotFather)
+token = "1039643253:AAEsPojFnk8qnfGacIzPUv57M1WCrnWPKEY"
+
+# Whether to use webhooks to get updates
+use_webhooks = true
+# Address for the webhook server to listen on
+webhook_address = "localhost"
+# Port for the webhook server to listen on
+webhook_port = 8080
+# Path for the webhook server to listen on (leave empty to use token)
+webhook_path = "super_secret_webhook/1039643253:AAEsPojFnk8qnfGacIzPUv57M1WCrnWPKEY"
+# Public webhook URL base for Telegram (path is appended)
+webhook_url = "http://example.com:8080/super_secret_webhook/1039643253:AAEsPojFnk8qnfGacIzPUv57M1WCrnWPKEY"
+# Connection limit for the webhook server
+webhook_limit = 30
