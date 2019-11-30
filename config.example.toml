@@ -5,7 +5,7 @@ token = "1039643253:AAEsPojFnk8qnfGacIzPUv57M1WCrnWPKEY"
 # Whether to use webhooks to get updates
 use_webhooks = true
 # Address for the webhook server to listen on
-webhook_address = "localhost"
+webhook_address = "0.0.0.0"
 # Port for the webhook server to listen on
 webhook_port = 8080
 # Path for the webhook server to listen on (leave empty to use token)
@@ -14,3 +14,11 @@ webhook_path = "super_secret_webhook/1039643253:AAEsPojFnk8qnfGacIzPUv57M1WCrnWP
 webhook_url = "http://example.com:8080/super_secret_webhook/1039643253:AAEsPojFnk8qnfGacIzPUv57M1WCrnWPKEY"
 # Connection limit for the webhook server
 webhook_limit = 30
+
+[pprof]
+# Whether to run the pprof HTTP server
+enable_server = true
+# Address for the server to listen on, if enabled
+server_address = "localhost"
+# Port for the server to listen on, if enabled
+server_port = 6060

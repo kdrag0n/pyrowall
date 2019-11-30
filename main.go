@@ -46,6 +46,10 @@ func main() {
 	setupLogging()
 
 	config := readConfig()
+	if config.Pprof.EnableServer {
+		startPprof(config)
+	}
+
 	startBot(config)
 
 	log.Info().Msg("Bot started")

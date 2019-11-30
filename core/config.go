@@ -19,9 +19,17 @@ type TelegramConfig struct {
 	WebhookConnectionLimit int    `toml:"webhook_limit"`
 }
 
+// PprofConfig holds the pprof-related configuration data for a bot instance.
+type PprofConfig struct {
+	EnableServer  bool   `toml:"enable_server"`
+	ServerAddress string `toml:"server_address"`
+	ServerPort    int    `toml:"server_port"`
+}
+
 // Config holds all the configuration data for a bot instance.
 type Config struct {
 	Telegram TelegramConfig `toml:"telegram"`
+	Pprof    PprofConfig    `toml:"pprof"`
 }
 
 // ParseConfig parses the given data into a Config.
