@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/kdrag0n/pyrowall/commands"
 
@@ -13,10 +14,11 @@ func (b *Bot) registerCommand(cmd commands.Command) error {
 		Str("command", cmd.Name).
 		Msg("Registering command")
 
-	if _, ok := b.Commands[cmd.Name]; ok {
+	lName := strings.ToLower(cmd.Name)
+	if _, ok := b.Commands[lName]; ok {
 		return fmt.Errorf("register command '%s': name already used", cmd.Name)
 	}
-	b.Commands[cmd.Name] = cmd
+	b.Commands[lName] = cmd
 
 	for _, alias := range cmd.Aliases {
 		log.Debug().
@@ -24,10 +26,11 @@ func (b *Bot) registerCommand(cmd commands.Command) error {
 			Str("alias", alias).
 			Msg("Registering command alias")
 
-		if _, ok := b.Commands[alias]; ok {
+		lAlias := strings.ToLower(alias)
+		if _, ok := b.Commands[lAlias]; ok {
 			return fmt.Errorf("register alias '%s' for command '%s': name already used", alias, cmd.Name)
 		}
-		b.Commands[alias] = cmd
+		b.Commands[lAlias] = cmd
 	}
 
 	return nil

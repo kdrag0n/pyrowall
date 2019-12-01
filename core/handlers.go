@@ -73,7 +73,7 @@ func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 	}
 
 	// Get and invoke command if valid
-	cmdName := cmdSeg[1:]
+	cmdName := strings.ToLower(cmdSeg[1:])
 	if cmd, ok := b.Commands[cmdName]; ok {
 		// Invoke command
 		cmd.Invoke(u, cmdSeg)
