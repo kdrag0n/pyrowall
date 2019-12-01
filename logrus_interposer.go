@@ -35,9 +35,6 @@ func (f *LogrusInterposer) Format(entry *logrus.Entry) (_ []byte, _ error) {
 	// Create zerolog event with the correct level
 	zlEvent := f.levelToEvent(entry.Level)
 
-	// Add original timestamp
-	zlEvent.Time(zerolog.TimestampFieldName, entry.Time)
-
 	// Add fields
 	zlEvent.Fields(entry.Data)
 
