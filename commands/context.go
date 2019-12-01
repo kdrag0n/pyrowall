@@ -49,7 +49,7 @@ func (c *Context) Args() []string {
 // RawArgs returns a string with everything in the command message except the command invocation segment.
 func (c *Context) RawArgs() string {
 	if !c.haveRawArgs {
-		c.rawArgs = c.Message.Text[len(c.CmdSegment):]
+		c.rawArgs = strings.TrimSpace(c.Message.Text[len(c.CmdSegment):])
 		c.haveRawArgs = true
 	}
 
