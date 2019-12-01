@@ -4,6 +4,8 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/kdrag0n/pyrowall/core"
 	_ "github.com/kdrag0n/pyrowall/modules"
 
@@ -12,7 +14,13 @@ import (
 )
 
 func setupLogging() {
+	// Set zerolog format
+	// TODO: add support for changing format and log level in config
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "Jan 02 15:04:05"})
+
+	// Register logrus->zerolog interposer and let zerolog handle levels
+	logrus.SetFormatter(&LogrusInterposer{})
+	logrus.SetLevel(logrus.TraceLevel)
 }
 
 func readConfig() (config *core.Config) {
