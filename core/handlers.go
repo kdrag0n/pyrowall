@@ -56,7 +56,7 @@ func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 	if cmdEndIdx == -1 {
 		cmdSeg = u.Message.Text[:util.Min(len(u.Message.Text), b.maxCmdSegLen)]
 	} else {
-		cmdSeg = u.Message.Text[cmdEndIdx:]
+		cmdSeg = u.Message.Text[:cmdEndIdx]
 	}
 	log.Debug().Str("segment", cmdSeg).Msg("Parsed command segment")
 
