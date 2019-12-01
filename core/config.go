@@ -26,10 +26,18 @@ type PprofConfig struct {
 	ServerPort    int    `toml:"server_port"`
 }
 
+// LoggingConfig holds the logging-related configuration data for a bot instance.
+type LoggingConfig struct {
+	Enable bool   `toml:"enable"`
+	Format string `toml:"format"`
+	Level  string `toml:"level"`
+}
+
 // Config holds all the configuration data for a bot instance.
 type Config struct {
 	Telegram TelegramConfig `toml:"telegram"`
 	Pprof    PprofConfig    `toml:"pprof"`
+	Logging  LoggingConfig  `toml:"logging"`
 }
 
 // ParseConfig parses the given data into a Config.

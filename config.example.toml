@@ -22,3 +22,13 @@ enable_server = true
 server_address = "localhost"
 # Port for the server to listen on, if enabled
 server_port = 6060
+
+[logging]
+# Whether to enable logging
+enable = true
+# Format to output logs in
+# Valid options: console, json
+format = "console"
+# Minimum level for messages to be logged
+# Valid options: trace, debug, info, warn, error, fatal, panic
+level = "info"
