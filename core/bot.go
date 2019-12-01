@@ -40,33 +40,43 @@ func NewBot(config *Config) *Bot {
 	}
 }
 
-func (b *Bot) startUpdater() error {
-	if b.Config.Telegram.UseWebhooks {
-		webhook := gotgbot.Webhook{
-			Serve:          b.Config.Telegram.WebhookAddress,
-			ServePort:      b.Config.Telegram.WebhookPort,
-			ServePath:      b.Config.Telegram.WebhookPath,
-			URL:            b.Config.Telegram.WebhookURL,
-			MaxConnections: b.Config.Telegram.WebhookConnectionLimit,
-		}
+func (b *Bot) startWebhooks() error {
+	webhook := gotgbot.Webhook{
+		Serve:          b.Config.Telegram.WebhookAddress,
+		ServePort:      b.Config.Telegram.WebhookPort,
+		ServePath:      b.Config.Telegram.WebhookPath,
+		URL:            b.Config.Telegram.WebhookURL,
+		MaxConnections: b.Config.Telegram.WebhookConnectionLimit,
+	}
 
-		b.updater.StartWebhook(webhook)
-		ok, err := b.updater.SetWebhook(b.updater.Bot.Token, webhook)
-		if err != nil {
-			return fmt.Errorf("start webhooks: %w", err)
-		}
+	b.updater.StartWebhook(webhook)
+	ok, err := b.updater.SetWebhook(b.updater.Bot.Token, webhook)
+	if err != nil {
+		return fmt.Errorf("start webhooks: %w", err)
+	}
 
-		if !ok {
-			return fmt.Errorf("set webhook: %w", err)
-		}
-	} else {
-		err := b.updater.StartPolling()
-		if err != nil {
-			return fmt.Errorf("start polling: %w", err)
-		}
+	if !ok {
+		return fmt.Errorf("set webhook: %w", err)
 	}
 
 	return nil
+}
+
+func (b *Bot) startPolling() error {
+	err := b.updater.StartPolling()
+	if err != nil {
+		return fmt.Errorf("start polling: %w", err)
+	}
+
+	return nil
+}
+
+func (b *Bot) startUpdater() error {
+	if b.Config.Telegram.UseWebhooks {
+		return b.startWebhooks()
+	} else {
+		return b.startPolling()
+	}
 }
 
 // Start connects to Telegram and starts the bot.
