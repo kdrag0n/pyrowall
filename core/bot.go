@@ -2,6 +2,7 @@ package core
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/kdrag0n/pyrowall/commands"
 
@@ -72,6 +73,8 @@ func (b *Bot) startPolling() error {
 }
 
 func (b *Bot) startUpdater() error {
+	ext.DefaultTgBotGetter.Client.Timeout = time.Second * 3
+
 	if b.Config.Telegram.UseWebhooks {
 		return b.startWebhooks()
 	} else {
