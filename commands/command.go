@@ -17,10 +17,6 @@ type Command struct {
 // Invoke invokes a Command with the given arguments.
 func (cmd *Command) Invoke(update *gotgbot.Update, cmdSeg string) {
 	// Construct context
-	ctx := Context{
-		Update:     update,
-		CmdSegment: cmdSeg,
-	}
-
+	ctx := newContext(update, cmdSeg)
 	cmd.Func(ctx)
 }

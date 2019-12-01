@@ -44,6 +44,6 @@ func init() {
  */
 
 func (m *Module) cmdStart(c commands.Context) {
-	_, err := c.Update.EffectiveMessage.ReplyText("Hello!")
+	_, err := c.Message.ReplyText("Hello!")
 	core.Check(err)
 }
