@@ -79,6 +79,22 @@ func (b *Bot) startUpdater() error {
 	}
 }
 
+func (b *Bot) fillUserInfo() (err error) {
+	// Get user data
+	b.User, err = b.Client.GetMe()
+	if err != nil {
+		return fmt.Errorf("fetch user info: %w", err)
+	}
+	log.Info().Interface("user", b.User).Msg("Fetched self user data")
+
+	// Calculate maximum command segment length (optimization for large messages)
+	// Prefix length (/) + max command name length + mention prefix length (@) + username length
+	b.maxCmdSegLen = 1 + MaxCommandLength + 1 + len(b.User.Username)
+	log.Debug().Int("len", b.maxCmdSegLen).Msg("Calculated max command segment length")
+
+	return
+}
+
 // Start connects to Telegram and starts the bot.
 func (b *Bot) Start() error {
 	// Load modules
@@ -93,18 +109,12 @@ func (b *Bot) Start() error {
 		return fmt.Errorf("create updater: %w", err)
 	}
 
-	// Set client and get self user
+	// Set client and fill self user info
 	b.Client = b.updater.Dispatcher.Bot
-	b.User, err = b.Client.GetMe()
+	err = b.fillUserInfo()
 	if err != nil {
-		return fmt.Errorf("fetch user info: %w", err)
+		return err
 	}
-	log.Info().Interface("user", b.User).Msg("Fetched self user data")
-
-	// Calculate maximum command segment length (optimization for large messages)
-	// Prefix length (/) + max command name length + mention prefix length (@) + username length
-	b.maxCmdSegLen = 1 + MaxCommandLength + 1 + len(b.User.Username)
-	log.Debug().Int("len", b.maxCmdSegLen).Msg("Calculated max command segment length")
 
 	// Register handlers
 	b.registerHandlers()
