@@ -4,7 +4,6 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/kdrag0n/pyrowall/commands"
 	"github.com/kdrag0n/pyrowall/util"
 
 	"github.com/PaulSonOfLars/gotgbot"
@@ -44,12 +43,11 @@ func (b *Bot) captionCmdHandler(eb ext.Bot, u *gotgbot.Update) error {
 	return gotgbot.ContinueGroups{}
 }
 
-func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
-	// Only handle commands
-	if u.Message.Text[0] != '/' {
-		return
-	}
+func textCmdPredicate(m *ext.Message) bool {
+	return m.Text != "" && m.Text[0] == '/'
+}
 
+func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 	// Extract only the command invocation segment (first part) from the message text
 	// This avoids using strings.Fields() to avoid excess allocations for long, whitespace-heavy messages since
 	// we might not even end up invoking a command
@@ -77,14 +75,8 @@ func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 	// Get and invoke command if valid
 	cmdName := cmdSeg[1:]
 	if cmd, ok := b.Commands[cmdName]; ok {
-		// Construct context
-		ctx := commands.Context{
-			Update:     u,
-			CmdSegment: cmdSeg,
-		}
-
-		// Call command function
-		cmd.Func(ctx)
+		// Invoke command
+		cmd.Invoke(u, cmdSeg)
 	}
 
 	return
@@ -100,5 +92,5 @@ func (b *Bot) registerHandlers() {
 
 	// Command message handlers
 	dsp.AddHandlerToGroup(handlers.NewMessage(Filters.Caption, b.captionCmdHandler), 0)
-	dsp.AddHandlerToGroup(handlers.NewMessage(Filters.Text, b.textCmdHandler), 0)
+	dsp.AddHandlerToGroup(handlers.NewMessage(textCmdPredicate, b.textCmdHandler), 0)
 }
