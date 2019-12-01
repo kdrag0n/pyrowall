@@ -44,19 +44,28 @@ func (b *Bot) registerCommands(mod Module) error {
 	return nil
 }
 
+func (b *Bot) loadModule(name string, cstr ModuleConstructor) error {
+	log.Info().Str("name", name).Msg("Loading module")
+	mod, err := cstr(b)
+	if err != nil {
+		return err
+	}
+
+	b.Modules[name] = mod
+	err = b.registerCommands(mod)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // LoadModules loads all of the bot's modules. Automatically called by Start.
 func (b *Bot) LoadModules() error {
 	log.Info().Msg("Loading modules...")
 
 	for name, cstr := range Modules {
-		log.Info().Str("name", name).Msg("Loading module")
-		mod, err := cstr(b)
-		if err != nil {
-			return fmt.Errorf("load module '%s': %w", name, err)
-		}
-
-		b.Modules[name] = mod
-		err = b.registerCommands(mod)
+		err := b.loadModule(name, cstr)
 		if err != nil {
 			return fmt.Errorf("load module '%s': %w", name, err)
 		}
