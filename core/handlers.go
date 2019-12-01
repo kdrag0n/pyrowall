@@ -15,18 +15,36 @@ import (
 )
 
 /*
- * Group 0 - command messages
+ * Group -20: leave channels
  */
 
+func channelPredicate(m *ext.Message) bool {
+	return m.Chat.Type == "channel"
+}
+
+func (b *Bot) channelLeaveHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
+	log.Debug().Str("name", u.EffectiveChat.Title).Int("id", u.EffectiveChat.Id).Msg("Leaving channel")
+
+	// Leave immediately since we already checked the chat type in the filter
+	_, err := b.Client.LeaveChat(u.EffectiveChat.Id)
+	if err != nil {
+		log.Err(err).Msg("Failed to leave channel")
+	}
+
+	return
+}
+
+/*
+ * Group 0: command messages
+ */
+
+// Run first & propagate to allow commands to be used in photo captions
 func (b *Bot) captionCmdHandler(eb ext.Bot, u *gotgbot.Update) error {
 	u.Message.Text = u.Message.Caption
-	return b.textCmdHandler(eb, u)
+	return gotgbot.ContinueGroups{}
 }
 
 func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
-	// Make sure we continue propagating events after running this handler
-	ret = gotgbot.ContinueGroups{}
-
 	// Only handle commands
 	if u.Message.Text[0] != '/' {
 		return
@@ -73,7 +91,14 @@ func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 }
 
 func (b *Bot) registerHandlers() {
+	dsp := b.updater.Dispatcher
+
+	// Channel leave handler
+	channelHandler := handlers.NewMessage(channelPredicate, b.channelLeaveHandler)
+	channelHandler.AllowChannel = true
+	dsp.AddHandlerToGroup(channelHandler, -20)
+
 	// Command message handlers
-	b.updater.Dispatcher.AddHandlerToGroup(handlers.NewMessage(Filters.Caption, b.captionCmdHandler), 0)
-	b.updater.Dispatcher.AddHandlerToGroup(handlers.NewMessage(Filters.Text, b.textCmdHandler), 0)
+	dsp.AddHandlerToGroup(handlers.NewMessage(Filters.Caption, b.captionCmdHandler), 0)
+	dsp.AddHandlerToGroup(handlers.NewMessage(Filters.Text, b.textCmdHandler), 0)
 }
