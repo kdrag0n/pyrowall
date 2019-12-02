@@ -68,7 +68,7 @@ func readConfig() (config *core.Config) {
 }
 
 func startBot(config *core.Config) *core.Bot {
-	log.Info().Msg("Starting bot...")
+	log.Info().Str("commit", GitCommit).Msg("Starting bot...")
 	bot := core.NewBot(config)
 
 	err := bot.Start()
