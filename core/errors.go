@@ -10,13 +10,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// Check is a convenience method for panicking on errors.
-func Check(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func createSentryEvent(err interface{}) (event *sentry.Event) {
 	var stacktrace *sentry.Stacktrace
 	switch err := err.(type) {

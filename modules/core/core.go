@@ -3,6 +3,7 @@ package core
 import (
 	"github.com/kdrag0n/pyrowall/commands"
 	"github.com/kdrag0n/pyrowall/core"
+	"github.com/kdrag0n/pyrowall/util"
 )
 
 // Module contains the state for an instance of this module.
@@ -45,5 +46,5 @@ func init() {
 
 func (m *Module) cmdStart(c commands.Context) {
 	_, err := c.Message.ReplyText("Hello!")
-	core.Check(err)
+	util.PanicIf(err)
 }

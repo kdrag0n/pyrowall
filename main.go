@@ -4,6 +4,8 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/kdrag0n/pyrowall/util"
+
 	"github.com/getsentry/sentry-go"
 
 	"github.com/sirupsen/logrus"
@@ -19,7 +21,7 @@ func setupLogging(config *core.Config) {
 	// Configure zerolog
 	if config.Logging.Enable {
 		level, err := zerolog.ParseLevel(config.Logging.Level)
-		core.Check(err)
+		util.PanicIf(err)
 		zerolog.SetGlobalLevel(level)
 
 		if config.Logging.Format == "console" {
@@ -62,7 +64,7 @@ func readConfig() (config *core.Config) {
 	}
 
 	config, err := core.ReadConfigFile(cfgName)
-	core.Check(err)
+	util.PanicIf(err)
 
 	return
 }
