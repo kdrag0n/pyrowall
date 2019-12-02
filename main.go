@@ -37,6 +37,11 @@ func setupLogging(config *core.Config) {
 func setupSentry(config *core.Config) {
 	log.Info().Msg("Initializing Sentry error reporting...")
 
+	// Default to Git commit hash for release
+	if config.Sentry.Release == "" {
+		config.Sentry.Release = GitCommit
+	}
+
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:         config.Sentry.DSN,
 		ServerName:  config.Sentry.ServerName,
