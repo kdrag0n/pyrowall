@@ -8,6 +8,7 @@ import (
 
 	"github.com/PaulSonOfLars/gotgbot"
 	"github.com/PaulSonOfLars/gotgbot/ext"
+	"github.com/go-pg/pg/v9"
 	"github.com/rs/zerolog/log"
 )
 
@@ -21,6 +22,8 @@ type Bot struct {
 	updater *gotgbot.Updater
 	Client  *ext.Bot
 	User    *ext.User
+
+	DB *pg.DB
 
 	Config   *Config
 	Modules  map[string]Module
@@ -98,8 +101,15 @@ func (b *Bot) fillUserInfo() (err error) {
 	return
 }
 
-// Start connects to Telegram and starts the bot.
+// Start initiates the core network connections and starts the bot.
 func (b *Bot) Start() (err error) {
+	// Connect to database
+	log.Info().Msg("Connecting to database...")
+	err = b.connectToDB()
+	if err != nil {
+		return fmt.Errorf("connect database: %w", err)
+	}
+
 	// Create updater
 	log.Info().Msg("Connecting to Telegram...")
 	b.updater, err = gotgbot.NewUpdater(b.Config.Telegram.Token)

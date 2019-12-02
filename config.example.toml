@@ -44,3 +44,20 @@ server_name = ""
 release = ""
 # Environment to tag events with (default: none; examples: dev, staging, prod)
 environment = "prod"
+
+[database]
+# Type of database to use
+# Valid options: postgres
+type = "postgres"
+# Protocol to connect to the database server with
+# Valid options: tcp, unix
+protocol = "tcp"
+# Address to connect to the database server with
+# If using the "unix" protocol, this is the path to the Unix socket file
+address = "localhost:5432"
+# Database user to log in with
+user = "pyrowall"
+# Password to log in with
+password = "epoh4veedaiGhaimeghi"
+# Name of the database to use
+database = "pyrowall"

@@ -42,12 +42,23 @@ type SentryConfig struct {
 	Environment string `toml:"environment"`
 }
 
+// DatabaseConfig holds the database-related configuration data for a bot instance.
+type DatabaseConfig struct {
+	Type     string `toml:"type"`
+	Protocol string `toml:"protocol"`
+	Address  string `toml:"address"`
+	User     string `toml:"user"`
+	Password string `toml:"password"`
+	Database string `toml:"database"`
+}
+
 // Config holds all the configuration data for a bot instance.
 type Config struct {
 	Telegram TelegramConfig `toml:"telegram"`
 	Pprof    PprofConfig    `toml:"pprof"`
 	Logging  LoggingConfig  `toml:"logging"`
 	Sentry   SentryConfig   `toml:"sentry"`
+	Database DatabaseConfig `toml:"database"`
 }
 
 // ParseConfig parses the given data into a Config.
