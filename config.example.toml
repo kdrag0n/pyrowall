@@ -32,3 +32,15 @@ format = "console"
 # Minimum level for messages to be logged
 # Valid options: trace, debug, info, warn, error, fatal, panic
 level = "info"
+
+[sentry]
+# Whether to report errors to Sentry
+enable = true
+# DSN to report errors to
+dsn = "https://2a4d51e57342454dbccd56588d56b22e@sentry.io/1840715"
+# Server name to tag events with (default: hostname)
+server_name = ""
+# Release to tag events with (default: Git commit hash if built with Mage, otherwise none)
+release = ""
+# Environment to tag events with (default: none; examples: dev, staging, prod)
+environment = "prod"

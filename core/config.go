@@ -33,11 +33,21 @@ type LoggingConfig struct {
 	Level  string `toml:"level"`
 }
 
+// SentryConfig holds the Sentry-related configuration data for a bot instance.
+type SentryConfig struct {
+	Enable      bool   `toml:"enable"`
+	DSN         string `toml:"dsn"`
+	ServerName  string `toml:"server_name"`
+	Release     string `toml:"release"`
+	Environment string `toml:"environment"`
+}
+
 // Config holds all the configuration data for a bot instance.
 type Config struct {
 	Telegram TelegramConfig `toml:"telegram"`
 	Pprof    PprofConfig    `toml:"pprof"`
 	Logging  LoggingConfig  `toml:"logging"`
+	Sentry   SentryConfig   `toml:"sentry"`
 }
 
 // ParseConfig parses the given data into a Config.

@@ -18,10 +18,12 @@ import (
  */
 
 func channelPredicate(m *ext.Message) bool {
+	defer Recover("channel message event predicate")
 	return m.Chat.Type == "channel"
 }
 
 func (b *Bot) channelLeaveHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
+	defer Recover("channel message event handler")
 	log.Debug().Str("name", u.EffectiveChat.Title).Int("id", u.EffectiveChat.Id).Msg("Leaving channel")
 
 	// Leave immediately since we already checked the chat type in the filter
@@ -39,15 +41,19 @@ func (b *Bot) channelLeaveHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 
 // Run first & propagate to allow commands to be used in photo captions
 func (b *Bot) captionCmdHandler(eb ext.Bot, u *gotgbot.Update) error {
+	defer Recover("caption command message event handler")
 	u.Message.Text = u.Message.Caption
 	return gotgbot.ContinueGroups{}
 }
 
 func textCmdPredicate(m *ext.Message) bool {
+	defer Recover("text command message event predicate")
 	return m.Text != "" && m.Text[0] == '/'
 }
 
 func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
+	defer Recover("text command message event handler")
+
 	// Extract only the command invocation segment (first part) from the message text
 	// This avoids using strings.Fields() to avoid excess allocations for long, whitespace-heavy messages since
 	// we might not even end up invoking a command
@@ -75,6 +81,7 @@ func (b *Bot) textCmdHandler(_ ext.Bot, u *gotgbot.Update) (ret error) {
 	// Get and invoke command if valid
 	cmdName := strings.ToLower(cmdSeg[1:])
 	if cmd, ok := b.Commands[cmdName]; ok {
+		defer Recover(cmd.Name + " command")
 		// Invoke command
 		cmd.Invoke(u, cmdSeg)
 	}

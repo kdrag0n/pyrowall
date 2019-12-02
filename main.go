@@ -4,6 +4,8 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/getsentry/sentry-go"
+
 	"github.com/sirupsen/logrus"
 
 	"github.com/kdrag0n/pyrowall/core"
@@ -30,6 +32,22 @@ func setupLogging(config *core.Config) {
 	// Register logrus->zerolog interposer and let zerolog handle levels
 	logrus.SetFormatter(&LogrusInterposer{})
 	logrus.SetLevel(logrus.TraceLevel)
+}
+
+func setupSentry(config *core.Config) {
+	log.Info().Msg("Initializing Sentry error reporting...")
+
+	err := sentry.Init(sentry.ClientOptions{
+		Dsn:         config.Sentry.DSN,
+		ServerName:  config.Sentry.ServerName,
+		Release:     config.Sentry.Release,
+		Environment: config.Sentry.Environment,
+
+		AttachStacktrace: true,
+	})
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to initialize Sentry client")
+	}
 }
 
 func readConfig() (config *core.Config) {
@@ -59,6 +77,7 @@ func startBot(config *core.Config) *core.Bot {
 func main() {
 	config := readConfig()
 	setupLogging(config)
+	setupSentry(config)
 
 	if config.Pprof.EnableServer {
 		startPprof(config)
