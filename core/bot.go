@@ -107,6 +107,7 @@ func (b *Bot) Start() error {
 	}
 
 	// Create updater
+	log.Info().Msg("Connecting to Telegram...")
 	b.updater, err = gotgbot.NewUpdater(b.Config.Telegram.Token)
 	if err != nil {
 		return fmt.Errorf("create updater: %w", err)
@@ -114,6 +115,7 @@ func (b *Bot) Start() error {
 
 	// Set client and fill self user info
 	b.Client = b.updater.Dispatcher.Bot
+	log.Info().Msg("Fetching user info...")
 	err = b.fillUserInfo()
 	if err != nil {
 		return err
