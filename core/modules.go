@@ -1,6 +1,8 @@
 package core
 
 import (
+	"fmt"
+
 	"github.com/kdrag0n/pyrowall/commands"
 )
 
@@ -23,5 +25,9 @@ var Modules = make(map[string]ModuleConstructor)
 
 // RegisterModule registers a module with the given name and constructor.
 func RegisterModule(name string, constructor ModuleConstructor) {
+	if _, ok := Modules[name]; ok {
+		panic(fmt.Errorf("attempted to register module under occupied name '%s'", name))
+	}
+
 	Modules[name] = constructor
 }
