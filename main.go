@@ -1,20 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"runtime"
 
+	"github.com/kdrag0n/pyrowall/core"
+	_ "github.com/kdrag0n/pyrowall/modules"
 	"github.com/kdrag0n/pyrowall/util"
 
 	"github.com/getsentry/sentry-go"
-
-	"github.com/sirupsen/logrus"
-
-	"github.com/kdrag0n/pyrowall/core"
-	_ "github.com/kdrag0n/pyrowall/modules"
-
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/sirupsen/logrus"
 )
 
 func setupLogging(config *core.Config) {
@@ -24,8 +22,12 @@ func setupLogging(config *core.Config) {
 		util.PanicIf(err)
 		zerolog.SetGlobalLevel(level)
 
-		if config.Logging.Format == "console" {
+		switch config.Logging.Format {
+		case "console":
 			log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: "Jan 02 15:04:05"})
+		case "json":
+		default:
+			panic(fmt.Errorf("unrecognized logging format '%s'", config.Logging.Format))
 		}
 	} else {
 		zerolog.SetGlobalLevel(zerolog.Disabled)
