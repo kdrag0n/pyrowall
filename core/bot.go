@@ -99,13 +99,7 @@ func (b *Bot) fillUserInfo() (err error) {
 }
 
 // Start connects to Telegram and starts the bot.
-func (b *Bot) Start() error {
-	// Load modules
-	err := b.LoadModules()
-	if err != nil {
-		return err
-	}
-
+func (b *Bot) Start() (err error) {
 	// Create updater
 	log.Info().Msg("Connecting to Telegram...")
 	b.updater, err = gotgbot.NewUpdater(b.Config.Telegram.Token)
@@ -118,11 +112,17 @@ func (b *Bot) Start() error {
 	log.Info().Msg("Fetching user info...")
 	err = b.fillUserInfo()
 	if err != nil {
-		return err
+		return
 	}
 
 	// Register handlers
 	b.registerHandlers()
+
+	// Load modules
+	err = b.LoadModules()
+	if err != nil {
+		return
+	}
 
 	// Start updater
 	return b.startUpdater()
